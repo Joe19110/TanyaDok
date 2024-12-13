@@ -331,7 +331,7 @@ main a:hover{
 /****** footer *****/
 
 footer{
-    background: #838383;
+    background: rgb(108, 108, 108);
     color: #f3f3f3;
     padding: 30px;
 }
@@ -473,6 +473,7 @@ footer > p{
 
     .footer-container{
         display: flex;
+        text-emphasis-color: #fff;
     }
 
     .footer-right,
