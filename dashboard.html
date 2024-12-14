@@ -32,9 +32,9 @@
             </div> 
                 <div class="row mx-auto my-auto justify-content-center" style="width: 90%; display: flex; flex-direction: row; text-align: center;">
                     <div style="justify-items: right; margin-right: 5%;">
-                        <div id="date" style="padding-bottom: 1%; font-size: 1vw;"></div>
+                        <div id="date" style="padding-bottom: 1%; font-size: max(1vw, 8px);"></div>
                     </div>
-                    <div id="recipeCarousel" class="carousel slide" data-interval="false" style="overflow: hidden; padding-right: 0%; width: 100%;">
+                    <div id="recipeCarousel" class="carousel slide" data-interval="false" style="overflow: hidden; padding-right: 1.5%; width: 100%;">
                         <div style="vertical-align: center;">
                             <a class="carousel-control-prev bg-transparent w-aut" href="#recipeCarousel" role="button" data-bs-slide="prev" style="width: 10%; height: fit-content; padding: 4.25vw 4.25vw 0 0;">
                                 <span class="carousel-control-prev-icon" style="filter: invert(100%); width: 2vw;"></span>
@@ -92,7 +92,7 @@
                 
             </div>
             <div id="weekly-graph-container">
-                <p style="float: right; font-size: 1em; padding: 1%; padding-bottom: 0;" id="week"></p>
+                <p style="float: right; font-size: max(1em, 8px); padding: 1%; padding-bottom: 0;" id="week"></p>
                 <canvas id="myChart"></canvas>
             </div>
 
@@ -181,10 +181,10 @@
                 </table>
             </div>
             <fieldset id="reminders-container"> 
-                <legend class="w-auto" style="font-size: 1.5vw; padding: 0px 2% 0px 2%;"> REMINDERS </legend>
+                <legend class="w-auto" style="font-size: max(1.5vw, 12px); padding: 0px 2% 0px 2%;"> REMINDERS </legend>
                 <button id="add-reminder">Add New</button>
                 <div style="justify-content: left;">
-                    <ul style="list-style-type: none; justify-items: left; font-size: 1vw; width: 100%; padding-top: 1%;" id="reminders-list">
+                    <ul style="list-style-type: none; justify-items: left; font-size: max(1vw, 12px); width: 100%; padding-top: 1%;" id="reminders-list">
                         
                     </ul>
                 </div>

@@ -24,7 +24,7 @@ body {
 
 h6 {
   padding-top: 5%;
-  font-size: 1vw;
+  font-size: max(1vw, 8px);
 }
 
 .health-values {
@@ -110,7 +110,7 @@ li {
   border-radius: 50%;
   position: absolute;
   top: 0;
-  font-size: 1vw; 
+  font-size: max(1vw, 12px); 
 }
 
 .button-wrap .pre-button i, .button-wrap .next-button i {
@@ -126,13 +126,11 @@ li {
 }
   
 .head-day {
-  font-size: 1em;
   line-height: 1;
   color: black; 
 }
   
 .head-month {
-  font-size: 1em;
   line-height: 1;
   color: black;
   text-transform: uppercase;
@@ -140,6 +138,7 @@ li {
 }
   
 .calendar-wrap {
+  font-size: 1em;
   width: 85%;
   background: #fff;
   padding: 10% 5% 0px 5%;
@@ -150,14 +149,23 @@ li {
 @media (max-width: 770px) {
   .calendar-wrap {
     width: 70%; 
+    font-size: 2em;
   } 
   #recipe-carousel {
     width: 100%;
   }
   .health-tracker-containers {
-    width: 16em;
+    width: 17em;
     height: 12em;
   }
+  h6 {
+    padding-top: 0px;
+  }
+  .col-md-3 {
+    padding-left: 2%;
+    padding-right: 2%;
+  }
+
   #myChart {
     font-size: 1vw;
     width: 100%; 
@@ -184,8 +192,15 @@ li {
     width: 100%;
   }
   #reminders-container {
-    width: 60%;
+    width: 50vw;
     margin-bottom: 5%;
+  }
+  input[type="checkbox"] {
+    width: 2em;
+    height: 2em;
+  }
+  #profile {
+    margin: 5% 0 0 60%;
   }
 }
   
@@ -250,13 +265,13 @@ tbody td:after {
 tbody td:hover, .selected {
   color: #fff;
   border: none; 
-  font-size: 1vw;
+  font-size: max(1vw, 12px);
 }
 
 tbody td:hover:after, .selected:after {
   background: #2a3246;
-  width: 2.2vw;
-  height: 2.2vw; 
+  width: max(2.2vw, 24px);
+  height: max(2.2vw, 24px); 
 }
   
 tbody td:active {
@@ -275,8 +290,8 @@ th {
 
 #today:after {
   background: #0D6EFD; 
-  width: 2.2vw;
-  height: 2.2vw;
+  width: max(2.2vw, 24px);
+  height: max(2.2vw, 24px); 
 }
   
 #disabled {
@@ -311,7 +326,7 @@ th {
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  font-size: 0.8vw; 
+  font-size: max(0.8vw, 8px); 
 }
   
 #reset:hover {
@@ -361,11 +376,10 @@ input[type="checkbox"] {
 .carousel-inner .carousel-item-next,
 .carousel-inner .carousel-item-prev {
   display: flex;
+  
 }
 
-/* medium and up screens */
-@media (min-width: 768px) {
-  .carousel-inner .carousel-item-end.active,
+.carousel-inner .carousel-item-end.active,
   .carousel-inner .carousel-item-next {
     transform: translateX(25%);
   }    
@@ -373,8 +387,6 @@ input[type="checkbox"] {
   .carousel-inner .carousel-item-prev {
     transform: translateX(-25%);
   }
-}
-
 .carousel-inner .carousel-item-end,
 .carousel-inner .carousel-item-start { 
   transform: translateX(0);
@@ -430,7 +442,7 @@ span[contenteditable="true"] {
   cursor: pointer;
   width: 25%;
   float: right;
-  font-size: 0.7vw;
+  font-size: max(0.7vw, 8px);
 }
 
 #add-reminder:hover {
@@ -448,5 +460,5 @@ span[contenteditable="true"] {
 }
 
 .date-numbers {
-  font-size: 1vw;
+  font-size: max(1vw, 12px);
 }
