@@ -288,6 +288,8 @@ document.addEventListener("DOMContentLoaded", function () {
             ]
         },
         options: {
+            responsive: true, 
+            maintainAspectRatio: false, 
             plugins: {
                 legend: {
                     labels: {
@@ -343,6 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dateString = getCurrentDateString(getCookie('selected_day'))
         editSlideContent("-1", "none", dateString);
     });
+    
     // Function to enhance carousel by cloning slides
     const enhanceCloningLogic = () => {
         const items = document.querySelectorAll('#recipeCarousel .carousel-item');
