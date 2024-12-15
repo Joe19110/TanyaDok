@@ -4,13 +4,15 @@
 body{
     display: flex;
     height: 100vh;
+    width: auto;
     margin: 0;
     font-family: 'Kumbh Sans', sans-serif;
     background: #fff;
 }
 
 img{
-    width: 100%;
+    width: 90%;
+    align-self: center;
 }
 ul{
     list-style: none;
@@ -22,7 +24,7 @@ a{
 }
 
 hr{
-    width: 95vw;
+    width: 2vw;
     margin: 0 auto;
 }
 
@@ -62,7 +64,6 @@ hr{
     background: #252525;
     padding: 14px 18px;
     font-size: 1.2rem;
-    font-family: 'Montserrat', sans-serif;
     transition: background 1s ease;
 }
 
@@ -120,11 +121,13 @@ main a:hover{
 /* main container left */
 
 .main-container-left{
-    padding: 30px 10px;
+    padding: 10px 10px;
+    width: 200%;
 }
 
 .main-container-left > h2{
     padding: 15px 0 15px 30px;
+    width: 100%;
 }
 
 .main-container-left h3{
@@ -150,55 +153,6 @@ main a:hover{
     background: #f3f3f3;
     margin: 15px 30px;
 }
-
-.main-container-right{
-    padding: 30px 10px;
-}
-
-.main-container-right > h2{
-    padding: 15px 0 15px 30px;
-}
-
-.main-container-right article{
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    padding: 15px 0;
-    border-bottom: 1px solid #7ac64d;
-}
-
-.main-container-right article:last-child{
-    border-bottom: none;
-}
-
-.main-container-right img{
-    width: 80px;
-    height: 80px;
-    align-self: center;
-}
-
-.main-container-right h4{
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 300;
-    font-size: 12px;
-    align-self: center;
-}
-
-.main-container-right article h2{
-    font-size: 18px;
-    padding: 10px 0;
-    font-family: var(--heading);
-}
-
-.main-container-right article p{
-    font-size: 15px;
-    font-weight: 300;
-}
-
-.main-container-right article div{
-    margin-right: 10px;
-}
-
 
 /****** footer *****/
 
@@ -247,7 +201,6 @@ footer > p{
     align-items: center;
     justify-content: start;
     width: 200px;
-    padding: 10px 10px;
     border-bottom: 1.6px solid #37c9f6;
 }
 
@@ -307,40 +260,8 @@ footer > p{
 }
 
 @media(min-width: 800px){
-    /* nav */
-    .ham-btn, .times-btn{
-        display: none!important;
-    }
-
-    .navigation-container{
-        display: flex;
-        background: #252525;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
     .top-head{
         flex: 0 0 15%;
-    }
-
-    /* social icons */
-    .social-icons{
-        flex: 0 1 30%;
-        display: block;
-        margin: 0 auto;
-    }
-
-    .social-icons .fab{
-        color: #fff;
-        font-size: 2rem;
-    }
-    .social-icons ul{
-        display: flex;
-        justify-content: space-between;
-        padding: 0 20px;
-    }
-    .social-icons ul li{
-        padding: 20px;
     }
 
     .footer-container{
