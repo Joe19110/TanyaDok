@@ -153,12 +153,6 @@ hr{
     position: relative;
 }
 
-.current-news-head h3:hover::before{
-    content: ">> ";
-    position: absolute;
-    left: -12px;
-}
-
 .current-news-head span{
     display: block;
     font-family: var(--heading);
