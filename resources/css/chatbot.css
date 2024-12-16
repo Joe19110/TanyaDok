@@ -1,6 +1,4 @@
-
-
-
+/*Sets the general style of the page*/
 body {
     display: flex;
     margin: 0;
@@ -12,35 +10,6 @@ body {
     background-color: #e9ecef;
     margin-left: 5%;
 }
-
-/* .search-box{
-    height: 30px;
-    display: flex;
-    cursor: pointer;
-    padding: 10px 20px;
-    background: #ffffff;
-    border-radius: 30px;
-    align-items: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-
-.search-box:hover input{
-    width: 100px;
-}
-
-.search-box input{
-    width: 0;
-    outline: none;
-    border: none;
-    font-weight: 500;
-    transition: 0.8s;
-    background: transparent;
-}
-
-.search-box a .fas{
-    color: #1daf;
-    font-size: 10px;
-} */
 
 ::-webkit-scrollbar {
     display: none;
@@ -83,13 +52,13 @@ body {
     font-weight: bold;
     color: #333;
 }
-
+/*The style for the chatbox div*/
 .chatbox-wrapper {
     display: flex;
     flex-grow: 1;
     width: 95%;
 }
-
+/*The style for the history div*/
 .history-sidebar {
     width: 25%;
     background-color: #fff;
@@ -101,11 +70,7 @@ body {
     height: calc(100vh - 190px);
 }
 
-.disabled {
-    pointer-events: none;
-    opacity: 0.5;
-}
-
+/*Turns the active chat to blue*/
 .active-chat {
     width: 100%;
     color:blue;
@@ -116,7 +81,7 @@ body {
     overflow-y: auto;
     height: 97%;
 }
-
+/*History sidebar styles*/
 .history-sidebar button {
     width: 100%;
     padding: 10px;
@@ -164,7 +129,7 @@ body {
     background-color: #0056b3;
     color: #fff;
 }
-
+/*Styles for the chat messages div*/
 #chat-container {
     flex-grow: 1;
     padding: 20px;
@@ -176,7 +141,7 @@ body {
     flex-direction: column;
     overflow-y: auto;
     height: calc(100vh - 190px);
-    scroll-behavior: smooth; /* This enables smooth scrolling */
+    scroll-behavior: smooth; 
 
 }
 
@@ -184,14 +149,15 @@ body {
     display: flex;
     flex-direction: column;
 }
-
+/*Slider to change the size of the div*/
 #vertical-divider {
     width: 5px;
     background-color: #ccc;
     cursor: col-resize;
-    height: 100%; /* Adjust as needed */
-    position: relative; /* Necessary for positioning calculations */
+    height: 100%; 
+    position: relative; 
   }
+/*Bot chat styles*/
 .bot-chat{
     display:flex;
     
@@ -225,6 +191,7 @@ body {
 .bot-message:hover .copy {
     display: block; 
 }
+/*Copy button styles*/
 .copy{
     width:20px;
     height:20px;
@@ -246,13 +213,13 @@ body {
     background-color: #0056b3;
     content: "Click to copy";
 }
-/* Add caption on hover */
+/* Add caption on hover (copy button)*/
 .copy:hover::after {
     content: "Click to copy";
-    position: absolute; /* Position relative to .copy */
-    top: 110%; /* Position below the button */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center adjustment */
+    position: absolute; 
+    top: 110%; 
+    left: 50%; 
+    transform: translateX(-50%); 
     background-color: #000;
     color: #fff;
     padding: 5px 10px;
@@ -260,15 +227,15 @@ body {
     font-size: 12px;
     white-space: nowrap;
     opacity: 0.8;
-    z-index: 1000; /* Ensure it appears above other elements */
+    z-index: 1000; 
 }
-/* Add caption on hover */
+/* Add caption on hover after copy button is clicked*/
 .copy.copied:hover::after {
     content: "Copied!";
-    position: absolute; /* Position relative to .copy */
-    top: 110%; /* Position below the button */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center adjustment */
+    position: absolute; 
+    top: 110%; 
+    left: 50%; 
+    transform: translateX(-50%); 
     background-color: #000;
     color: #fff;
     padding: 5px 10px;
@@ -276,12 +243,10 @@ body {
     font-size: 12px;
     white-space: nowrap;
     opacity: 0.8;
-    z-index: 1000; /* Ensure it appears above other elements */
+    z-index: 1000; 
 }
 
-
-
-
+/*User chat styles*/
 .user-chat{
     display:flex;
     
@@ -323,7 +288,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
+/*Buttons styles*/
 #send-button {
     padding: 10px 20px;
     background-color: #007bff;
@@ -362,9 +327,8 @@ body {
     margin-right: 30px;
     margin-left:0px ;
 }
-
-.hidden {
-    display:none;
+#send-button:hover {
+    background-color: #0056b3;
 }
 
 #scroll-down{
@@ -382,6 +346,7 @@ body {
     background-size: 20px, 20px;
     background-repeat: no-repeat; /* Prevents the image from repeating */
 }
+/*Prompt styles*/
 .super-container{
     background-color:#fff;
     color:black;
@@ -394,9 +359,7 @@ body {
     transition: opacity 0.2s ease;
     opacity:1;
 }
-.invisible{
-    opacity:0;
-}
+
 .text-container{
     justify-content:center;
     place-items:center;
@@ -433,11 +396,7 @@ body {
 #close:hover{
     color: #007bff;
 }
-
-#send-button:hover {
-    background-color: #0056b3;
-}
-
+/*Show prompt button*/
 #show-prompts{
     padding: 10px 20px;
     background-color: #007bff;
@@ -450,16 +409,17 @@ body {
 #show-prompts:hover {
     background-color: #0056b3;
 }
+/*Delete button styles*/
 .deletable:hover {
     background-color: red !important; /* Highlight with a soft red */
-  }
+}
   
-  #cancel-button {
+#cancel-button {
     background-color: red !important; /* Warning color */
-  }
-  #cancel-button:hover {
+}
+#cancel-button:hover {
     background-color: #CD5C5C !important; /* Warning color */
-  }
+}
 
 
 #clear-all{
@@ -468,17 +428,30 @@ body {
 #clear-all:hover {
     background-color: #CD5C5C !important; /* Warning color */
   }
-  
 
+/*Disables a button or any element*/
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+/*Hides any element*/
+.invisible{
+    opacity:0;
+}
+.hidden {
+    display:none;
+}
+  
+/*Responsive page styles*/
 @media (max-width: 480px) {
     nav {
         display: none;
     }
     #vertical-divider {
         width: 100%;
-        height: 5px; /* Adjust height as needed */
-        cursor: ns-resize; /* Change cursor to vertical resize */
-        margin: 0; /* Remove any margins if present */
+        height: 5px; 
+        cursor: ns-resize; 
+        margin: 0; 
         display: none;
       }
     
