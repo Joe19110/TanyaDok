@@ -514,6 +514,7 @@ function loadHistory() {
   // Update UI
   promptInput.classList.add('disabled')
   promptContainer.classList.add('invisible')
+  showPromptButton.classList.add('disabled')
 
   auth.onAuthStateChanged((user) => {
     if (user) {
@@ -533,6 +534,7 @@ function loadHistory() {
           // Update UI
           promptInput.classList.remove('disabled')
           promptContainer.classList.remove('invisible')
+          showPromptButton.classList.remove('disabled')
         })
         .catch((error) => {
           clearInterval(loadingInterval); // Stop the interval
