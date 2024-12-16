@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyD__WGbiXsXPP3spsIT-Cn6SROw6rBpk_Y' // Define the chatbot API
+const API_KEY = 'AIzaSyCc0JjTH146Bvvoz8w6dTKd90IP-elOsXk' // Define the chatbot API
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`
 
 // Defines all the html elements
@@ -496,25 +496,42 @@ function refreshHistoryItem() {
     });
 }
 
+const loadingBar = document.getElementById('loadingBar');
+// Show loading bar until data is fetched
+function showLoadingBar() {
+  loadingBar.style.width = '20%';
+  setTimeout(() => {
+    loadingBar.style.width = '80%';
+  }, 100); 
+}
+
+// Hide loading bar once data is fetched
+function hideLoadingBar() {
+  loadingBar.style.width = '100%';
+  setTimeout(() => {
+    loadingBar.style.width = '0%';
+  }, 100)
+}
+
 function loadHistory() {
   // Initialize the loading dots
   let loadingDots = 1;
-  
-  // Display initial loading message before the db is loaded
+  // Display initial loading message
   chatMessages.innerHTML = "<strong>Loading Chat History.</strong>";
   historyContainer.innerHTML = "<strong>Loading Chat History.</strong>";
 
   // Start an interval to update the loading dots
   const loadingInterval = setInterval(() => {
     loadingDots = (loadingDots % 3) + 1; // Cycle through 1 to 3
-    const dots = ".".repeat(loadingDots); // Generate dots
+    const dots = ".".repeat(loadingDots); // Generate dots dynamically
     chatMessages.innerHTML = `<strong>Loading Chat History${dots}</strong>`;
     historyContainer.innerHTML = `<strong>Loading Chat History${dots}</strong>`;
-  }, 500); // Update every 500 ms
-  // Update UI
+  }, 500); // Update every 500ms
   promptInput.classList.add('disabled')
   promptContainer.classList.add('invisible')
   showPromptButton.classList.add('disabled')
+
+  showLoadingBar() // Show the loading bar as the db is being loaded
 
   auth.onAuthStateChanged((user) => {
     if (user) {
@@ -531,10 +548,11 @@ function loadHistory() {
           clearInterval(loadingInterval);
           chatMessages.innerHTML = ""; // Clear loading message
           historyContainer.innerHTML = ""; // Clear loading message
-          // Update UI
           promptInput.classList.remove('disabled')
           promptContainer.classList.remove('invisible')
           showPromptButton.classList.remove('disabled')
+          hideLoadingBar() // Hides the loading bar
+
         })
         .catch((error) => {
           clearInterval(loadingInterval); // Stop the interval
