@@ -49,9 +49,9 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background-color: #ddd;
       margin: 10px auto;
       cursor: pointer;
+      background-image: url('resources/images/profile.jpg');
       background-size: cover;
       background-position: center;
       border: 2px solid #aaa;
@@ -212,6 +212,22 @@
       margin-top:0px !important;
 
     }
+    /* Loading Bar */
+    #loadingBarContainer {
+      width: 100%;
+      height: 6px;
+      background-color: #f3f3f3;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    #loadingBar {
+      height: 100%;
+      width: 0%;
+      background-color: blue;
+    }
 
     /* Responsive Design */
     @media (max-width: 768px) {
@@ -312,6 +328,10 @@
       <button class="btn" id="noBtn">No</button>
     </div>
   </div>
+  <!-- Loading Bar Container -->
+  <div id="loadingBarContainer">
+    <div id="loadingBar"></div>
+  </div>
   <!--Input profile picture Section-->
   <div id="inputContainer" class="hidden">
     <button id="close-button" class="">X</button>
@@ -377,6 +397,20 @@
     const closeUpload = document.getElementById('close-button');
     const previewCircle = document.getElementById('previewCircle');
     let imageUrl;
+    const loadingBar = document.getElementById('loadingBar');
+
+    // Show loading bar until data is fetched
+    function showLoadingBar() {
+      loadingBar.style.width = '20%';
+      setTimeout(() => {
+        loadingBar.style.width = '80%';
+      }, 100); 
+    }
+
+    // Hide loading bar once data is fetched
+    function hideLoadingBar() {
+      loadingBar.style.width = '0%';
+    }
 
     // Upload image section
     profileCircle.addEventListener('click', function() {
@@ -512,9 +546,12 @@
 
 // Listen for changes in the authentication state
 auth.onAuthStateChanged((user) => {
+
   if (user) {
+
     emailInput.value = user.email; // Display the email from the user db
-    const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ','); 
+    const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ',');
+     
     // Fetch user profile picture link from the database
     db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => {
       const profilePicture = snapshot.val();
@@ -527,6 +564,14 @@ auth.onAuthStateChanged((user) => {
       profileCircle.style.backgroundSize = 'cover'; 
       profileCircle.style.backgroundPosition = 'center'; 
       profileCircle.style.backgroundRepeat = 'no-repeat'; 
+      // Set the default profile image for new users
+      if (profilePicture === null){
+        profileCircle.style.backgroundImage = `url('resources/images/profile.jpg')`;
+        profileCircle.style.backgroundSize = 'cover'; 
+        profileCircle.style.backgroundPosition = 'center'; 
+        profileCircle.style.backgroundRepeat = 'no-repeat'; 
+        db.ref(`users/${userEmailKey}/profilePicture`).set('resources/images/profile.jpg')
+      }
     });
 
     // Fetch user data from the database
@@ -554,6 +599,11 @@ auth.onAuthStateChanged((user) => {
       const weight = snapshot.val();
       weightInput.value = weight || ''; // Set the weight or leave empty
     });
+    // Hide the loading bar after it reaches 100% and loaded all the user values
+    loadingBar.style.width = '100%';
+    setTimeout(() => {
+      hideLoadingBar();
+    }, 300)
   } else {
     // If the user is not logged in, alert and redirect to the login page
     window.location.href = 'index.html'; // Redirect to login page
@@ -655,6 +705,8 @@ noBtn.addEventListener('click', function(){
   deleteContainer.classList.add('hidden');
   body.classList.remove('blur')
 })
+
+showLoadingBar() // Calls the loading bar
   </script>
 </body>
 </html>
