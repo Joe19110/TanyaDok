@@ -175,7 +175,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebas
 import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-const firebaseConfig = {
+const dbConfig = {
     apiKey: "AIzaSyCepN1r_bYYwR-s0jdv2A4gH5hJbWojTes",
     authDomain: "hci-final-e2c95.firebaseapp.com",
     projectId: "hci-final-e2c95",
@@ -185,38 +185,32 @@ const firebaseConfig = {
     measurementId: "G-SQY9PH3PWZ",
     databaseURL: "https://hci-final-e2c95-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
+const authConfig = {
+    apiKey: "AIzaSyD9lP6HWENT1eoaPubNdc2BJKAZP6uEtgs",
+    authDomain: "login-93b7c.firebaseapp.com",
+    databaseURL: "https://login-93b7c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "login-93b7c",
+    storageBucket: "login-93b7c.firebasestorage.app",
+    messagingSenderId: "1071407429197",
+    appId: "1:1071407429197:web:6c88dda674de5d2dae8e04",
+    measurementId: "G-HR35VE9TZ5"
+  };
+// Initialize Firebase Authentication
+const authApp = initializeApp(authConfig);
+const auth = getAuth(authApp);
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Initialize Firebase Realtime Database
+const dbApp = initializeApp(dbConfig, "db");
+const database = getDatabase(dbApp);
 let userid;
+// Listen for auth state changes
 onAuthStateChanged(auth, (user) => {
+  if (user) {
     userid = user.uid;
+  }
 });
-
-// Initialize Realtime Database and get a reference to the service
-const database = getDatabase(app);
 document.addEventListener("DOMContentLoaded", function () {
-    let minPerSlide = 4;
-    // function updateLayoutBasedOnScreenSize() {
-    //     const screenWidth = window.innerWidth;
     
-    //     if (screenWidth < 100) {
-    //         minPerSlide = 1;
-    //     } else if (screenWidth < 200) {
-    //         minPerSlide = 2;
-    //     } else if (screenWidth < 300) {
-    //         minPerSlide = 3;
-    //     }
-    // }
-    
-    // // Call once to set the initial state
-    // updateLayoutBasedOnScreenSize();
-    
-    // // Add an event listener for resize
-    // window.addEventListener("resize", updateLayoutBasedOnScreenSize);
-    
-    // Function to get a cookie by its name
     function getCookie(name) {
         if (document.cookie.length) {
             var arrCookie = document.cookie.split(';'),
@@ -350,6 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const enhanceCloningLogic = () => {
         const items = document.querySelectorAll('#recipeCarousel .carousel-item');
         items.forEach((el) => {
+            let minPerSlide = 4;
             let next = el.nextElementSibling;
             // Loop to create additional clones
             for (let i = 1; i < minPerSlide; i++) {
@@ -373,10 +368,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Set the editing state on focus
     document.addEventListener("focusin", function (event) {
-        if (event.target.classList.contains("editable")) {
+        if (event.target.classList.contains("editable") || event.target.getAttribute("contenteditable")) {
             isEditing = true; // Editing has started
+            event.target.addEventListener("input", () => {
+                const text = event.target.innerText; // Get the text content of the element
+                if (event.target.getAttribute('data-id') == "bloodPressure") {
+                    event.target.textContent = event.target.textContent.replace(/[^0-9/]/g, "");
+                    if (text.length == 4 && !text.includes("/")) {
+                        event.target.innerText = text.slice(0, 3) + "/" + text.slice(3);
+                    }
+                    if (text.length > 5) {
+                        event.target.innerText = text.slice(0, 6); // Truncate text
+                    }
+                } else if (event.target.getAttribute('data-id') == "respiratoryRate") {
+                    event.target.textContent = event.target.textContent.replace(/[^0-9]/g, "");
+                    if (text.length > 1) {
+                        event.target.innerText = text.slice(0, 2); // Truncate text
+                    }
+                } else if (event.target.getAttribute('data-id') == "oxygenLevel" || event.target.getAttribute('data-id') == "heartRate" || event.target.getAttribute('data-id') == "glucoseLevel") {
+                    event.target.textContent = event.target.textContent.replace(/[^0-9]/g, "");
+                    if (text.length > 2) {
+                        event.target.innerText = text.slice(0, 3); // Truncate text
+                    }
+                } else {
+                    if (text.length > 19) {
+                        event.target.innerText = text.slice(0, 20); // Truncate text
+                    }
+                }
+                placeCaretAtEnd(event.target);
+            });
         }
     });
+    function placeCaretAtEnd(element) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(element);
+        range.collapse(false); // Collapse to the end
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
 
     // Reset the editing state on focus out
     document.addEventListener("focusout", function (event) {
@@ -400,7 +430,10 @@ document.addEventListener("DOMContentLoaded", function () {
         updateGraphForWeek(getCookie('selected_day'));
     };
     // Function to handle the content editing
-    function editSlideContent(dataid, newText, dateString){
+    let updateTimeout;
+function editSlideContent(dataid, newText, dateString) {
+    if (updateTimeout) clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(() => {
         get(ref(database, `health-data/${userid}/${dateString}`)).then((snapshot) => {
             if (snapshot.exists()) {
                 if (dataid != "-1") {
@@ -420,16 +453,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     heartRate: "-",
                     oxygenLevel: "-",
                     glucoseLevel: "-",
-                    respiratoryRate: "-"
+                    respiratoryRate: "-",
                 });
             }
-            if (dataid != "-1") {
-                editSlideContent(dataid, newText, dateString);
-            } else {
-                updateSlideContent(dateString);
-            }
+            updateSlideContent(dateString); // Sync once after the update
         });
-    };
+    }, 300); // Debounce by 300ms
+}
+
     // Initialize the carousel by cloning and syncing content
     enhanceCloningLogic();
     // Carousel controls (optional, based on your need)
