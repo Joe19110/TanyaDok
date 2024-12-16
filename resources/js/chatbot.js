@@ -1,9 +1,10 @@
-const API_KEY = 'AIzaSyB8Fhgf_QvP_Jp3DgcH547IRZvn9vfgP4Q'
+const API_KEY = 'AIzaSyD__WGbiXsXPP3spsIT-Cn6SROw6rBpk_Y' // Define the chatbot API
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`
 
-let promptInput = document.querySelector('input[name="prompt"]');
-let output = document.querySelector('.output');
-let stop = false
+// Defines all the html elements
+let promptInput = document.querySelector('input[name="prompt"]'); // User input
+let output = document.querySelector('.output'); // Output div
+let stop = false // For the stop button
 // ID elements from HTML
 const bot_prompt = 'You are a bot that is to be a professional doctor. You are called "Dok", you dont have to introduce yourself every time you answer, just the first time. So, answer anything as if you were treating a patient. Ask one follow up question about what the user(patient) is asking. Once there is enough information, give advice. Also give disclaimers that any advice you give should be re-consulted to a doctor. You only do disclaimer when you give advice and you always put it in the last.'
 const chatMessages = document.getElementById("chat-messages"); // The chat messages div
@@ -13,39 +14,39 @@ const newChatButton = document.getElementById("new-chat"); // The new chat butto
 const clearHistoryButton = document.getElementById("clear-history"); // The clear history button
 const sendButton = document.getElementById("send-button"); // The send button
 const stopButton = document.getElementById("stop-button"); // The send button
-const scrollButton = document.getElementById('scroll-down');
-const prompt1Button = document.getElementById('prompt1');
-const prompt2Button = document.getElementById('prompt2');
-const prompt3Button = document.getElementById('prompt3');
-const closeButton = document.getElementById('close');
-const showPromptButton = document.getElementById('show-prompts');
-const promptContainer = document.getElementById('super-container');
-let userInputMessage;
-let chatHistory; // Load chat history from local storage
-let currentChatIndex = -1;
-let messages = '';
+const scrollButton = document.getElementById('scroll-down'); // Scroll button
+const prompt1Button = document.getElementById('prompt1'); // Prompt 1
+const prompt2Button = document.getElementById('prompt2'); // Prompt 2
+const prompt3Button = document.getElementById('prompt3'); // Prompt 3
+const closeButton = document.getElementById('close'); // Close prompt button
+const showPromptButton = document.getElementById('show-prompts'); // Show prompt button
+const promptContainer = document.getElementById('super-container'); // Prompt container
+let userInputMessage; // The user input value
+let chatHistory; // Define the chat history
+let currentChatIndex = -1; // Set the default chat index to -1 (no history)
+let messages = ''; // Sets the current chat context to none at first
 
-const divider = document.getElementById('vertical-divider');
-const chatContainer = document.getElementById('chat-container');
-const historySideBar = document.getElementById('history-sidebar');
-const clearAllButton = document.getElementById('clear-all');
-const cancelButton = document.getElementById('cancel-button');
-
-
-let isDragging = false;
+const divider = document.getElementById('vertical-divider'); // The slider to change the size of the div
+const chatContainer = document.getElementById('chat-container'); // Div that contains the chat
+const historySideBar = document.getElementById('history-sidebar'); // History div
+const clearAllButton = document.getElementById('clear-all'); // Clear all button
+const cancelButton = document.getElementById('cancel-button'); // Cancel clear button
+// Dragging slider logic
+// Initialize default settings
+let isDragging = false; 
 let initialX;
 let initialWidth;
 let chatContainerWidth;
-
+// Set the logic for big screens
 if (window.innerWidth >= 480) {
-  
+  // Event listener for when mouse is clicked
   divider.addEventListener('mousedown', (e) => {
     isDragging = true;
     initialX = e.clientX;
     initialWidth = chatContainer.offsetWidth;
     
   });
-  
+  // Changes the width of the div when the mouse is moved
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
   
@@ -80,21 +81,21 @@ if (window.innerWidth >= 480) {
       clearHistoryButton.innerHTML = 'Delete History'; 
     }
   
-    // Update styles with the newWidth
+    // Update css with the newWidth
     chatContainer.style.width = `${newWidth}px`;
     historySideBar.style.width = `calc(100% - ${newWidth}px - 5px)`; 
     scrollButton.style.marginLeft = `calc(${newWidth}px / 2 - 2%)`; 
     promptContainer.style.width = `calc(${newWidth}px - 5%)`;
   
-    // Save the new width to local storage
+    // Sets the new width
     chatContainerWidth = newWidth;
-    checkContainerWidth(newWidth);
+    checkContainerWidth(newWidth); // Checks the container width
   });
-  
+  // Sets the dragging to false when the mouse is not clicked
   document.addEventListener('mouseup', () => {
     isDragging = false;
   });
-  };
+};
   
     // Adjust divider for smaller screens
   if (window.innerWidth < 480) {
@@ -119,38 +120,36 @@ function startNewChat() {
     return;
   }
 
-    // Get the total number of chats in Firebase, dynamically calculate length
+    // Get the total number of chats in Firebase to create a new chat
     db.ref(`users/${user.uid}/chats`).once('value', (snapshot) => {
-      const newChatIndex = snapshot.numChildren();  // This gives the length of the chats in the database
+      const newChatIndex = snapshot.numChildren();  
 
-    const chats = snapshot.val();
+      const newChat = {
+        sender: "bot",
+        message: "<b>Dok: </b><br>Hello I am Dok! How can I assist you today? What would you like to ask?"
+      };
 
-    const newChat = {
-      sender: "bot",
-      message: "<b>Dok: </b><br>Hello I am Dok! How can I assist you today? What would you like to ask?"
-    };
+      // Save the new chat to the database
+      db.ref(`users/${user.uid}/chats/${newChatIndex}/messages`).push(newChat);
 
-    // Save the new chat to the database
-    db.ref(`users/${user.uid}/chats/${newChatIndex}/messages`).push(newChat);
+      // Update the currentChatIndex on the db
+      db.ref(`users/${user.uid}/currentChatIndex`).set(newChatIndex);
 
-    // Update the currentChatIndex
-    db.ref(`users/${user.uid}/currentChatIndex`).set(newChatIndex);
-
-    // Update the UI
-    userInputBox.focus();
-    chatMessages.innerHTML = `<div class="chatbot-message bot-message">${newChat.message}</div>`;
-
-    const historyItem = document.createElement("a");
-    historyItem.href = "#";
-    historyItem.innerHTML = `<strong>Chat ${newChatIndex + 1}</strong>`;
-    historyItem.classList.add("history-item");
-    historyItem.addEventListener("click", () => {
-      loadChat(newChatIndex);
-      checkUserMessage();
+      // Update the UI
       userInputBox.focus();
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatMessages.innerHTML = `<div class="chatbot-message bot-message">${newChat.message}</div>`;
 
-    });
+      const historyItem = document.createElement("a");
+      historyItem.href = "#";
+      historyItem.innerHTML = `<strong>Chat ${newChatIndex + 1}</strong>`;
+      historyItem.classList.add("history-item");
+      historyItem.addEventListener("click", () => {
+        loadChat(newChatIndex);
+        checkUserMessage();
+        userInputBox.focus();
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      });
     historyContainer.appendChild(historyItem);
     db.ref(`users/${user.uid}/chatIndex`).push(newChatIndex);
 
@@ -175,10 +174,10 @@ function loadChat(index) {
   chatMessages.innerHTML = ""; // Clear current chat
 
   const chatRef = db.ref(`users/${user.uid}/chats/${index}/messages`);
-  // Replace non-alphanumeric characters in the email for database path usage
+  // Replace some characters in the email so that it can be stored in the firebase
   const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ',');
 
-  chatRef.on('value', (snapshot) => {
+  chatRef.on('value', (snapshot) => { // Shows the available chat on the html
     const messages = snapshot.val();
     if (!messages) {
       chatMessages.innerHTML = "No chat history available.";
@@ -187,16 +186,16 @@ function loadChat(index) {
 
     chatMessages.innerHTML = ""; // Clear existing chat messages
 
-    Object.values(messages).forEach((msg) => {
-      const chat = document.createElement('div');
-      chat.classList.add(`${msg.sender}-chat`);
+    Object.values(messages).forEach((msg) => { // Shows each message in the html, identifying its sender to style accordingly
+      const chat = document.createElement('div'); // Adds the styles for each messages div and also the profile picture of those messages
+      chat.classList.add(`${msg.sender}-chat`); // Adds the style for the div that contains both messages and profile of each message
       const profile = document.createElement('div');
       profile.classList.add(`${msg.sender}-profile`);
       const messageDiv = document.createElement("div");
       messageDiv.classList.add(`${msg.sender}-message`);
       const name = msg.sender === "bot" ? "" : "You: <br>";
       messageDiv.innerHTML = `<b>${name} </b>${msg.message}`;
-      if (msg.sender === 'bot') {
+      if (msg.sender === 'bot') { // Append the profile and the message to the bigger div
         chat.appendChild(profile);
         chat.appendChild(messageDiv);
         
@@ -204,19 +203,19 @@ function loadChat(index) {
         chat.appendChild(messageDiv);
         chat.appendChild(profile);
         // Fetch user data from the database
-        db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => {
+        db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => { // Gets the profile picture link from db
           const profilePicture = snapshot.val();
-          
+          // Sets the background image for the profile
           profile.style.backgroundImage = `url(${profilePicture})`;
-          profile.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
-          profile.style.backgroundPosition = 'center'; // Optional: center the image
-          profile.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition    });
+          profile.style.backgroundSize = 'cover'; 
+          profile.style.backgroundPosition = 'center'; 
+          profile.style.backgroundRepeat = 'no-repeat'; 
         });
-          }
-      
+      }
+      // Add the chat div to the message div
       chatMessages.appendChild(chat);
       
-
+      // Adds a functional copy button for each bot message
       if (msg.sender === "bot") {
         const copyButton = document.createElement("button");
         copyButton.classList.add("copy");
@@ -233,18 +232,17 @@ function loadChat(index) {
         });
       }
     })
-    // Use setTimeout to ensure the scroll happens after rendering
+    // Set a timeout to ensure the scroll happens after the chat is loaded from db
     setTimeout(() => {
       chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 100); // Adjust timeout if needed
+    }, 100); 
     
   });
-
-  updateActiveHistoryItem();
-  // Save the current chat index to the database
-  db.ref(`users/${user.uid}/currentChatIndex`).set(currentChatIndex);
-}
-
+    // Call the function that changes the color of the active chat
+    updateActiveHistoryItem();
+    // Save the current chat index to the database
+    db.ref(`users/${user.uid}/currentChatIndex`).set(currentChatIndex);
+  }
 
   // Change color for the active chat
   function updateActiveHistoryItem() {
@@ -258,13 +256,13 @@ function loadChat(index) {
     // Get the history item corresponding to the current chat index
     const activeItem = allHistoryItems[currentChatIndex];
   
-    // Add the active-chat class to the active chat
+    // Add the active-chat class to the current opened chat
     if (activeItem) {
-        activeItem.classList.add("active-chat");
+        activeItem.classList.add("active-chat"); // The active-chat class adds the color blue
     }
   }
 
-
+// Typing effect of the bot response
 const showTypingEffect = (text, textElement, callback) => {
   // Split the words of the api response
   const generatingMessage = document.querySelector('.generating-message');
@@ -276,17 +274,17 @@ const showTypingEffect = (text, textElement, callback) => {
   let currentWordIndex = 0;
   // Set the time between each word generation
   const typingInterval = setInterval(() => {
-    // Add the text one by one to the chatbot response div
-    textElement.innerHTML += (currentWordIndex === 0 ? '': ' ') + words[currentWordIndex++];
+  // Add the text one by one to the chatbot response div
+  textElement.innerHTML += (currentWordIndex === 0 ? '': ' ') + words[currentWordIndex++];
 
-    // Stop once all the words are written in the div or the stop button is pressed
-    if(currentWordIndex === words.length || stop === true) {
-      clearInterval(typingInterval);
-      userInputBox.focus();
+  // Stop once all the words are written in the div or the stop button is pressed
+  if(currentWordIndex === words.length || stop === true) {
+    clearInterval(typingInterval);
+    userInputBox.focus();
 
-      if (callback) callback(); // Execute the callback when typing is done
+    if (callback) callback(); // Execute the callback when typing is done
 
-    }
+  }
   }, 75)
 }
   
@@ -317,7 +315,7 @@ const generateAPIResponse = async () => {
       );
       const botChat = document.createElement('div');
       botChat.classList.add('bot-chat');
-      const botProfile = document.createElement('div');
+      const botProfile = document.createElement('div'); // Adds the bot profile div to add the bot profile picture
       botProfile.classList.add('bot-profile');
       // Create a container for the bot response
       const botResponseDiv = document.createElement('div');
@@ -325,15 +323,15 @@ const generateAPIResponse = async () => {
       botChat.appendChild(botProfile);
       botChat.appendChild(botResponseDiv)
       
-      // Append the container to the output div
+      // Append the botChat div which contains the message and the profile to the output div
       output.appendChild(botChat);
-      // Add the 'Dok: '(sender) text to the container
+      // Add the 'Dok: ' text to the container
       botResponseDiv.innerHTML += `<b>Dok: </b><br>`;
 
       
       // Call the typing effect and input the text and the response div
       showTypingEffect(apiResponse, botResponseDiv, () => {
-        // Re-enable UI elements
+        // Re-enable UI elements after typing is done
         historyContainer.classList.remove('disabled');
         newChatButton.classList.remove('disabled');
         clearHistoryButton.classList.remove('disabled');
@@ -346,38 +344,29 @@ const generateAPIResponse = async () => {
         // // Refresh UI
         refreshHistoryItem();
         updateActiveHistoryItem();
-        // refreshHistoryItem();
-        // updateActiveHistoryItem();
-
+        
         // Formatted response of the current text in botResponseDiv
         const botResponse = botResponseDiv.innerHTML
         let formattedResponse;
-
+        // Format the response
         formattedResponse = botResponse.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-        const user = auth.currentUser;
-        chatHistory = // Save the new chat to the database
-        db.ref(`users/${user.uid}/chats/${currentChatIndex}/messages`)
+        const user = auth.currentUser; // Define the current user
+        chatHistory = db.ref(`users/${user.uid}/chats/${currentChatIndex}/messages`) // Give the database reference
         // Save the formatted response to chat history
         const botMessageObj = { sender: "bot", message: botResponse };
         chatHistory.push(botMessageObj)
 
         // Scroll down
         chatContainer.scrollTop = chatContainer.scrollHeight;
-
+        // Load the active chat
         loadChat(currentChatIndex);
-        
-
       });
-
       // Scroll to the bottom
       chatContainer.scrollTop = chatContainer.scrollHeight;
 
-      
-  } catch (error) {
+  } catch (error) { // States if there is an error
       console.error(error);
   } 
-    
-
 };
 
 // Format the initial response that is generated from the bot
@@ -402,31 +391,25 @@ function sendMessage() {
     hidePrompts();
 
     const user = auth.currentUser;
-    chatHistory = // Save the new chat to the database
-    db.ref(`users/${user.uid}/chats/${currentChatIndex}/messages`)
+    chatHistory = db.ref(`users/${user.uid}/chats/${currentChatIndex}/messages`) // Defines the db reference
 
     const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ',');
 
     // Add the context of the current selected conversation to the bot
-
-        // Add the context of the current selected conversation to the bot
     chatHistory.on('value', (snapshot) => {
       const context = snapshot.val();
-      let tempContext = '';  // Initialize tempContext as an empty string
-
-      // Loop through each message and concatenate it to tempContext
+      let tempContext = '';  // Initialize tempContext as an empty string when first opening a history tab
+      // Loop through each message and add it to tempContext
       Object.values(context).forEach((msg) => {
         tempContext += `${msg.sender}: ${msg.message}\n`;  // Append each message
       });
-
       // Now tempContext contains the full conversation
-      messages = tempContext;  // You can now assign this full context to messages
-      console.log(messages);  // Log the complete conversation context
+      messages = tempContext; // Assign the tempContext to the messages in order to pass it to the bot
     });
 
     // Add the user input to the conversation div
     userInputMessage = promptInput.value
-    // Fetch user data from the database
+    // Fetch user data from the database and show it on the html
     const generatingMessage = document.createElement('div');
     generatingMessage.innerHTML = 'Dok is Thinking...';
     generatingMessage.classList.add('generating-message');
@@ -434,32 +417,29 @@ function sendMessage() {
     userChat.classList.add('user-chat');
     const userProfile = document.createElement('div');
     userProfile.classList.add('user-profile');
+    // Gets the link of the user profile picture
     db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => {
       const profilePicture = snapshot.val();
-      
+      // Set the background of the profile div of the user
       userProfile.style.backgroundImage = `url(${profilePicture})`;
-      userProfile.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
-      userProfile.style.backgroundPosition = 'center'; // Optional: center the image
-      userProfile.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition    });
+      userProfile.style.backgroundSize = 'cover'; 
+      userProfile.style.backgroundPosition = 'center'; 
+      userProfile.style.backgroundRepeat = 'no-repeat'; 
     })
     .then(() => {
       userChat.innerHTML += `<div class='user-message'><b>You: </b><br>${userInput}</div>`;
       userChat.appendChild(userProfile);
       output.appendChild(userChat);
     
-    // Set the user message format and sender to save
+      // Set the user message format and sender to save
       const userMessage = { sender: "user", message: userInput};
-
-      chatHistory.push(userMessage);
       //save the user input to current chat index history
-      
-      
+      chatHistory.push(userMessage);
       // Display "Generating..." below the user input before the typing effect is shown
       output.appendChild(generatingMessage);
       // Scroll to the bottom of the selected chat
-    // Call the generate response function
       chatContainer.scrollTop = chatContainer.scrollHeight;
-
+      // Call the generate bot response
       generateAPIResponse();
     // Clear the input box
       promptInput.value = '';
@@ -467,16 +447,16 @@ function sendMessage() {
     })
 }
 
-  // Update the chat history view from the database
+// Update the chat history view from the database
 function refreshHistoryItem() {
   const user = auth.currentUser;
   if (!user) {
     console.error("User is not signed in. Cannot refresh chat history.");
     return;
   }
-
+  // Define the db path
   const userChatsRef = db.ref(`users/${user.uid}/chats`);
-
+  // Gets the chat history from db
   userChatsRef.once('value')
     .then((snapshot) => {
       const chats = snapshot.val();
@@ -486,7 +466,7 @@ function refreshHistoryItem() {
         console.log("No chats available to display in history.");
         return;
       }
-
+      // Adds the first user message if it exists to each history items
       Object.keys(chats).forEach((chatIndex) => {
         const chat = chats[chatIndex];
         const messages = chat.messages ? Object.values(chat.messages) : [];
@@ -516,36 +496,71 @@ function refreshHistoryItem() {
     });
 }
 
-// Load the chat history and initialize the UI
 function loadHistory() {
+  // Initialize the loading dots
+  let loadingDots = 1;
+  
+  // Display initial loading message before the db is loaded
+  chatMessages.innerHTML = "<strong>Loading Chat History.</strong>";
+  historyContainer.innerHTML = "<strong>Loading Chat History.</strong>";
+
+  // Start an interval to update the loading dots
+  const loadingInterval = setInterval(() => {
+    loadingDots = (loadingDots % 3) + 1; // Cycle through 1 to 3
+    const dots = ".".repeat(loadingDots); // Generate dots
+    chatMessages.innerHTML = `<strong>Loading Chat History${dots}</strong>`;
+    historyContainer.innerHTML = `<strong>Loading Chat History${dots}</strong>`;
+  }, 500); // Update every 500 ms
+  // Update UI
+  promptInput.classList.add('disabled')
+  promptContainer.classList.add('invisible')
+
   auth.onAuthStateChanged((user) => {
     if (user) {
-      // User is signed in, proceed to load chat history
-
+      // User is signed in, load chat history
       db.ref(`users/${user.uid}/currentChatIndex`).once('value')
-      .then((snapshot) => {
-        currentChatIndex = snapshot.val();
-        refreshHistoryItem();
-
-        loadChat(currentChatIndex);
-      })
-      return db.ref(`users/${user.uid}/chats`).once('value')
         .then((snapshot) => {
-          const totalChats = snapshot.numChildren(); // This gives the length of the chats in the database
+          currentChatIndex = snapshot.val();
+          refreshHistoryItem();
+          // Load the saved chat index
+          return loadChat(currentChatIndex);
+        })
+        .then(() => {
+          // Remove loading text and stop the interval
+          clearInterval(loadingInterval);
+          chatMessages.innerHTML = ""; // Clear loading message
+          historyContainer.innerHTML = ""; // Clear loading message
+          // Update UI
+          promptInput.classList.remove('disabled')
+          promptContainer.classList.remove('invisible')
+        })
+        .catch((error) => {
+          clearInterval(loadingInterval); // Stop the interval
+          console.error("Error loading chat history:", error);
+          chatMessages.innerHTML = "Failed to load chat history.";
+          historyContainer.innerHTML = "Failed to load chat history.";
+        });
+
+      // Starts a new chat if there is no history
+      db.ref(`users/${user.uid}/chats`).once('value')
+        .then((snapshot) => {
+          const totalChats = snapshot.numChildren();
           if (totalChats === 0) {
             startNewChat();
           }
-        })
-
+        });
 
     } else {
       // User is not signed in, clear the history and show a message
+      clearInterval(loadingInterval); // Stop the interval
       historyContainer.innerHTML = '';
       chatMessages.innerHTML = "Please sign in to view your chat history.";
       console.error("User is not signed in.");
     }
   });
 }
+
+// Delete chat history function
 function clearChatHistory() {
   const user = auth.currentUser;
 
@@ -577,7 +592,7 @@ function clearChatHistory() {
           return db.ref(`users/${user.uid}/chats`).once('value');
         })
         .then((snapshot) => {
-          const totalChats = snapshot.numChildren(); // This gives the length of the chats in the database
+          const totalChats = snapshot.numChildren(); 
 
           // Update currentChatIndex based on the relative position of the deleted chat
           if (previousChatIndex === index) {
@@ -592,17 +607,15 @@ function clearChatHistory() {
             currentChatIndex = previousChatIndex - 1; // Adjust index if the deleted chat was before
           }
 
-          if (currentChatIndex < 0) {
+          if (currentChatIndex < 0) { // Automatically create a new chat if all chat history is deleted
             currentChatIndex = 0
             if (totalChats === 0) {
               setTimeout(() => {
                 startNewChat();
-              }, 300); // Adjust timeout if needed
+              }, 300); 
               
             }
           }
-          
-
           // Update the UI
           loadChat(currentChatIndex);
           refreshHistoryItem();
@@ -622,7 +635,7 @@ function clearChatHistory() {
           historyItem.classList.remove('deletable');
 
         })
-        .then(() => {
+        .then(() => { // Refresh the history items after deletion
           refreshHistoryItem();
         })
         
@@ -643,10 +656,8 @@ function clearChatHistory() {
     
     //Update the UI
     loadChat(currentChatIndex);
-
     refreshHistoryItem();
     updateActiveHistoryItem();
-
 
     // Remove the click event listeners from history items
     allHistoryItems.forEach((historyItem) => {
@@ -655,16 +666,13 @@ function clearChatHistory() {
     });
 });
 }
-
-
-
 // Helper function to delete a chat and reorder the remaining chats
 function deleteChatAndReorder(chatsRef, index) {
   return chatsRef.once('value').then((snapshot) => {
     const chats = snapshot.val(); // Retrieve all chats as an object
     const updatedChats = {};
 
-    // Rebuild the chats object with updated indices
+    // Rebuild the chats object with updated index
     let newIndex = 0;
     Object.keys(chats).forEach((key) => {
       if (parseInt(key, 10) !== index) {
@@ -678,26 +686,22 @@ function deleteChatAndReorder(chatsRef, index) {
   });
 }
 
-  
+// Delete all the chat history
 function clearAllHistory() {
   const user = firebase.auth().currentUser;
-    
     if (user) {
-  
       // Delete user data from the database first
       db.ref(`users/${user.uid}/chats`).remove();
       db.ref(`users/${user.uid}/currentChatIndex`).remove();
 
-
       historyContainer.innerHTML = '';
-      startNewChat()
+      startNewChat() // Automatically start a new chat
 
       // Hide and Show the buttons
       cancelButton.classList.add('hidden');
       clearAllButton.classList.add('hidden');
       clearHistoryButton.classList.remove('hidden');
 
-        
     } else {
       console.log('No History');
     }
@@ -706,36 +710,36 @@ function clearAllHistory() {
 // Check whether the send function should be available
 function disableSend(){
   // Disable the send button by default (no input)
-sendButton.classList.add('disabled');
-      // Event listener for send button click
-sendButton.addEventListener('click', (ev) => {
-  ev.preventDefault();
-  sendMessage(ev); // Pass ev to sendMessage
-  });
+  sendButton.classList.add('disabled');
+        // Event listener for send button click
+  sendButton.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    sendMessage(ev); // Pass ev to sendMessage
+    });
     
-// Event listener for Enter key press in the input field
-promptInput.addEventListener('keydown', (ev) => {
-  if (ev.key === 'Enter') {
-    if (promptInput.value.trim() !== '') {
+  // Event listener for Enter key press in the input field
+  promptInput.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') {
+      if (promptInput.value.trim() !== '') {
 
-    ev.preventDefault(); 
-    sendMessage(ev);
-  }}
-});
+      ev.preventDefault(); 
+      sendMessage(ev);
+    }}
+  });
 }
-// Prevent empty prompts by detecting input from the input box
-userInputBox.addEventListener('input', () => {
-  if (promptInput.value.trim() !== ''){
-    sendButton.classList.remove('disabled'); // Enable the send button if there is input
-  } else {
-    sendButton.classList.add('disabled'); // Disable the send button if there is no input
+  // Prevent empty prompts by detecting input from the input box
+  userInputBox.addEventListener('input', () => {
+    if (promptInput.value.trim() !== ''){
+      sendButton.classList.remove('disabled'); // Enable the send button if there is input
+    } else {
+      sendButton.classList.add('disabled'); // Disable the send button if there is no input
+    }
+  })
+
+  stopButton.addEventListener('click', () => { // Add event listener for the stop button
+    stop = true;
+    userInputBox.focus();
   }
-})
-
-stopButton.addEventListener('click', () => { // Add event listener for the stop button
-  stop = true;
-  userInputBox.focus();
-}
 );
 
 
@@ -745,17 +749,16 @@ function isScrolledToBottom() { // Checks if the current chat is scrolled to the
 }
 
 let checkScrollInterval
-
 function checkScroll() { // Continuously check whether the current chat is scrolled to the bottom
-checkScrollInterval = setInterval(() => {
-  if (isScrolledToBottom()) {
-    // Hide the scroll button if scrolled to the bottom
-    scrollButton.classList.add('hidden');
-  } else {
-    // Show the scroll button if not at the bottom
-    scrollButton.classList.remove('hidden');
-  }
-}, 100);
+  checkScrollInterval = setInterval(() => {
+    if (isScrolledToBottom()) {
+      // Hide the scroll button if scrolled to the bottom
+      scrollButton.classList.add('hidden');
+    } else {
+      // Show the scroll button if not at the bottom
+      scrollButton.classList.remove('hidden');
+    }
+  }, 100);
 }
 
 function checkUserMessage() {
@@ -764,7 +767,6 @@ function checkUserMessage() {
     console.error("User is not signed in.");
     return;
   }
-
   const userChatsRef = db.ref(`users/${user.uid}/chats/${currentChatIndex}/messages`);
   
   // Check if there are user messages
