@@ -56,6 +56,7 @@
       background-position: center;
       border: 2px solid #aaa;
     }
+    /*Edit icon styles*/
     .edit-image{
       width:40px;
       height:40px;
@@ -63,54 +64,53 @@
       margin-left:30px;
       margin-top:-50px;
     }
-
+    /*Preview circle style*/
     #previewCircle{
       width:190px;
       height:190px;
-  }
-  #previewCircle:hover::before {
-    content: ""; /* Required for pseudo-elements */
-    position: absolute;
-    left: 50%; /* Position it horizontally in the middle */
-    transform: translate(-50%); /* Shift the element back by half of its width/height to center it */
+    }
+    /*Loads the delete button when preview circle is hovered*/
+    #previewCircle:hover::before {
+      content: ""; 
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%); 
+      width: 190px;
+      height: 190px;
+      background-image: url('resources/images/deleteChatButton.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 50%; 
+      z-index: 2; 
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+    /*Adds the blur effect on the background image of preview circle*/
+    #previewCircle:hover::after {
+        content: ""; 
+        position: absolute;
+        left: 50%; 
+        transform: translate(-50%); 
+        width: 190px;
+        height: 190px;
+        background: rgba(0, 0, 0, 0.5);
+        filter: blur(5px);
+        border-radius: 50%;
+        z-index: 1; 
+        transition: filter 0.3s ease; 
+    }
 
-    width: 190px;
-    height: 190px;
-    background-image: url('resources/images/deleteChatButton.png'); /* The overlapping image */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 50%; /* Match the circular shape */
-    z-index: 2; /* Ensure it's above the background */
-    opacity: 0.8; /* Optional: Adjust transparency for blending */
-    transition: opacity 0.3s ease; /* Smooth transition effect */
-}
-
-#previewCircle:hover::after {
-    content: ""; /* Required for pseudo-elements */
-    position: absolute;
-    left: 50%; /* Position it horizontally in the middle */
-    transform: translate(-50%); /* Shift the element back by half of its width/height to center it */
-
-    width: 190px;
-    height: 190px;
-    background: rgba(0, 0, 0, 0.5); /* Black color with transparency */
-    filter: blur(5px); /* Apply blur effect */
-    border-radius: 50%; /* Match the circular shape */
-    z-index: 1; /* Ensure it's behind the overlapping image */
-    transition: filter 0.3s ease; /* Smooth transition for blur */
-}
-
-/* Disable hover effects when 'clicked' class is added */
-#previewCircle.clicked:hover::before,
-#previewCircle.clicked:hover::after {
-  content: none !important; /* Disable both the pseudo-elements completely */
-    opacity: 1 !important; /* Prevent opacity change */
-    filter: none !important; /* Remove the blur effect */
-    background-image: none !important; /* Ensure the background image from ::before is removed */
-    background: none !important; /* Remove the background of ::after */
-}
-  
+    /* Disable hover effects when 'clicked' class is added */
+    #previewCircle.clicked:hover::before,
+    #previewCircle.clicked:hover::after {
+        content: none !important;
+        opacity: 1 !important; 
+        filter: none !important;
+        background-image: none !important; 
+        background: none !important; 
+    }
+    
     /* Input Fields */
     .profile-fields input {
       width: 100%;
@@ -125,7 +125,7 @@
     .buttons-container {
       margin-top: 20px;
     }
-
+    /*Button styles*/
     .btn {
       padding: 10px 20px;
       margin: 5px;
@@ -137,11 +137,11 @@
       font-size: 14px;
       transition: background 0.2s;
     }
-
+    /*Change color when button is hovered*/
     .btn:hover {
       background-color: #0056b3;
     }
-
+    /*logout button color*/
     .btn-logout {
       background-color: red;
     }
@@ -149,14 +149,14 @@
     .btn-logout:hover {
       background-color: darkred;
     }
-
+    /*Yes and delete button color*/
     #deleteBtn, #yesBtn{
       background-color: red;
     }
     #deleteBtn:hover, #yesBtn:hover{
       background-color: darkred;
     }
-
+    /*Delete confirmation container styling*/
     .delete{
       background-color: #ffffff;
       border: 1px solid #ddd;
@@ -170,6 +170,7 @@
       position:absolute;
       z-index:1000;
     }
+    /*Input profile picture div styles*/
     #inputContainer{
       background-color: #ffffff;
       border: 1px solid #ddd;
@@ -187,6 +188,7 @@
       margin-top:7%;
       margin-bottom:2%;
     }
+    /*Styles for the edit profile picture div close button*/
     #close-button{
       position:absolute;
       margin-left:40%;
@@ -195,14 +197,16 @@
       cursor: pointer;
       border:none;
     }
-    
+    /*A hidden class, makes an element have no display*/
     .hidden{
       display:none;
     }
+    /*Adds blur*/
     .blur {
       filter: blur(5px);
       pointer-events: none; /* Optional: prevent interaction with blurred content */
     }
+    /*Edit profile div instruction*/
     .instruction{
       font-size:x-small;
       margin-top:0px !important;
@@ -308,10 +312,9 @@
       <button class="btn" id="noBtn">No</button>
     </div>
   </div>
-  
+  <!--Input profile picture Section-->
   <div id="inputContainer" class="hidden">
     <button id="close-button" class="">X</button>
-
     <div
       class="profile-circle"
       id="previewCircle"
@@ -319,18 +322,17 @@
     <input type="text" id="imageUrlInput" placeholder="Enter image URL" />
     <button id="uploadImageButton" class="btn">Save Image</button>
     <p class="instruction">Input the image address to use as a profile picture</p>
-
   </div>
 
   <div class="container" id="container">
     <!-- Profile Image Placeholder -->
-     <div>
-    <div
-      class="profile-circle"
-      id="profileCircle"
-    ></div>
-    <img src="resources/images/editImage.png" alt="edit image" class="edit-image">
-  </div>
+    <div>
+      <div
+        class="profile-circle"
+        id="profileCircle"
+      ></div>
+      <img src="resources/images/editImage.png" alt="edit image" class="edit-image">
+    </div>
     
     <!-- Editable Fields Section -->
     <div class="profile-fields">
@@ -350,16 +352,17 @@
       <button class="btn" id="deleteBtn">Delete Account</button>
     </div>
   </div>
-
+  <!--Firebase links-->
   <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database-compat.js"></script>
-  <script src="resources/js/register.js"></script>
+  <script src="resources/js/register.js"></script> <!--To get the firebase config-->
   <script>
+    // All html elements that is used
     const profileCircle = document.getElementById('profileCircle');
     const saveButton = document.getElementById('saveBtn');
     const logoutButton = document.getElementById('logoutBtn');
-
+    // User profile inputs
     const nameInput = document.getElementById('name');
     const birthdateInput = document.getElementById('birthdate');
     const bloodTypeInput = document.getElementById('bloodType');
@@ -375,20 +378,17 @@
     const previewCircle = document.getElementById('previewCircle');
     let imageUrl;
 
-    // Get a reference to the storage service
-
+    // Upload image section
     profileCircle.addEventListener('click', function() {
       const user = auth.currentUser;
 
-      // Use the user.email value directly for display purposes
+      // Defines the user.email value for display purposes
       const userEmail = user.email;
-
-      // Replace non-alphanumeric characters in the email for database path usage
       const userEmailKey = userEmail.replace(/[^a-zA-Z0-9]/g, ',');
 
       inputContainer.classList.toggle('hidden');
       body.classList.toggle('blur')
-      // Fetch user data from the database
+      // Fetch user profile picture link from the database
       db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => {
         const profilePicture = snapshot.val();
         if (profilePicture === 'resources/images/profile.jpg'){
@@ -399,42 +399,40 @@
               previewCircle.style.cursor = 'pointer';
 
             }
+        // Sets the background image for the preview circle from the link in the db
         previewCircle.style.backgroundImage = `url(${profilePicture})`;
-        previewCircle.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
-        previewCircle.style.backgroundPosition = 'center'; // Optional: center the image
-        previewCircle.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition    });
+        previewCircle.style.backgroundSize = 'cover'; 
+        previewCircle.style.backgroundPosition = 'center';
+        previewCircle.style.backgroundRepeat = 'no-repeat'; 
       });
       
     });
-
+    // Checks whether the image url input is empty
     imageUrlInput.addEventListener('input', function () {
       const user = auth.currentUser;
 
-      // Use the user.email value directly for display purposes
+      // Use the user.email for user profile display
       const userEmail = user.email;
-
-      // Replace non-alphanumeric characters in the email for database path usage
       const userEmailKey = userEmail.replace(/[^a-zA-Z0-9]/g, ',');
-
-
+      // Sets the preview circle once the link is inputted
       const url = imageUrlInput.value.trim();
       if (url.match(/https?:\/\/[^\s]+/)) {
         previewCircle.style.backgroundImage = `url(${url})`;
-        previewCircle.style.backgroundSize = 'cover'; // Optional
-        previewCircle.style.backgroundPosition = 'center'; // Optional
-        previewCircle.style.backgroundRepeat = 'no-repeat'; // Optional
+        previewCircle.style.backgroundSize = 'cover'; 
+        previewCircle.style.backgroundPosition = 'center'; 
+        previewCircle.style.backgroundRepeat = 'no-repeat'; 
         previewCircle.classList.remove('clicked');
         previewCircle.style.cursor = 'pointer';
 
       } else {
-      // Fetch user data from the database
+      // Fetch user profile picture link from the database
       db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => {
               const profilePicture = snapshot.val();
               if (profilePicture === 'resources/images/profile.jpg'){
                 previewCircle.classList.add('clicked');
                 previewCircle.style.cursor = 'default';
-
               }
+              // Sets the preview circle background
               previewCircle.style.backgroundImage = `url(${profilePicture})`;
               previewCircle.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
               previewCircle.style.backgroundPosition = 'center'; // Optional: center the image
@@ -442,49 +440,46 @@
             });
         }
     });
-
+    // Adds an event listener to the preview circle to delete the profile picture
     previewCircle.addEventListener('click', function() {
       previewCircle.style.backgroundImage = `url('resources/images/profile.jpg')`;
-      previewCircle.style.backgroundSize = '100% 100%'; // Make the image stretch to fill the element
-      previewCircle.style.backgroundPosition = 'center'; // Optional: center the image
-      previewCircle.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition
+      previewCircle.style.backgroundSize = '100% 100%'; 
+      previewCircle.style.backgroundPosition = 'center'; 
+      previewCircle.style.backgroundRepeat = 'no-repeat'; 
 
       previewCircle.classList.add('clicked');
       previewCircle.style.cursor = 'default';
       imageUrlInput.value = ''; // Clear the input field after setting the image
-
   });
 
-
+  // Closes the upload image div
     closeUpload.addEventListener('click', function(){
       inputContainer.classList.add('hidden');
       body.classList.remove('blur');
       imageUrlInput.value = ''; // Clear the input field after setting the image
     })
-
+    // Saves the image link to the db when the button is clicked
     uploadImageButton.addEventListener('click', function() {
       const user = auth.currentUser;
 
       // Use the user.email value directly for display purposes
       const userEmail = user.email;
-
-      // Replace non-alphanumeric characters in the email for database path usage
       const userEmailKey = userEmail.replace(/[^a-zA-Z0-9]/g, ',');
 
       const url = imageUrlInput.value.trim();
       if (url) {
-        // Validate URL format
+        // Sets the background image of the profile circle to the image link
         if (url.match(/https?:\/\/[^\s]+/)) {
           imageUrl = url
           profileCircle.style.backgroundImage = `url(${url})`;
-          profileCircle.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
-          profileCircle.style.backgroundPosition = 'center'; // Optional: center the image
-          profileCircle.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition
-          imageUrlInput.value = ''; // Clear the input field after setting the image
+          profileCircle.style.backgroundSize = 'cover'; 
+          profileCircle.style.backgroundPosition = 'center'; 
+          profileCircle.style.backgroundRepeat = 'no-repeat'; 
+          imageUrlInput.value = ''; 
           inputContainer.classList.add('hidden');
           body.classList.remove('blur');
 
-          // Update data in Firebase under separate paths
+          // Update data in Firebase 
           db.ref(`users/${userEmailKey}/profilePicture`).set(imageUrl)
             .then(() => console.log('Username updated successfully!'))
             .catch(error => alert('Error updating username: ' + error.message));
@@ -497,14 +492,14 @@
         if (previewCircle.classList.contains('clicked')) {
           imageUrl = 'resources/images/profile.jpg'
           profileCircle.style.backgroundImage = `url('resources/images/profile.jpg')`;
-          profileCircle.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
-          profileCircle.style.backgroundPosition = 'center'; // Optional: center the image
-          profileCircle.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition
-          imageUrlInput.value = ''; // Clear the input field after setting the image
+          profileCircle.style.backgroundSize = 'cover'; 
+          profileCircle.style.backgroundPosition = 'center'; 
+          profileCircle.style.backgroundRepeat = 'no-repeat'; 
+          imageUrlInput.value = ''; 
           inputContainer.classList.add('hidden');
           body.classList.remove('blur');
 
-          // Update data in Firebase under separate paths
+          // Update data in Firebase
           db.ref(`users/${userEmailKey}/profilePicture`).set(imageUrl)
             .then(() => console.log('Username updated successfully!'))
             .catch(error => alert('Error updating username: ' + error.message));
@@ -518,13 +513,9 @@
 // Listen for changes in the authentication state
 auth.onAuthStateChanged((user) => {
   if (user) {
-    // Use the user's email directly for display
-    emailInput.value = user.email; // Display the email from the user object
-
-    // Replace non-alphanumeric characters in the email for database path usage
-    const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ',');
-
-    // Fetch user data from the database
+    emailInput.value = user.email; // Display the email from the user db
+    const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ','); 
+    // Fetch user profile picture link from the database
     db.ref(`users/${userEmailKey}/profilePicture`).once('value').then(snapshot => {
       const profilePicture = snapshot.val();
       if (profilePicture === 'resources/images/profile.jpg'){
@@ -533,10 +524,11 @@ auth.onAuthStateChanged((user) => {
 
       }
       profileCircle.style.backgroundImage = `url(${profilePicture})`;
-      profileCircle.style.backgroundSize = 'cover'; // Optional: make sure the image covers the element
-      profileCircle.style.backgroundPosition = 'center'; // Optional: center the image
-      profileCircle.style.backgroundRepeat = 'no-repeat'; // Optional: prevent image repetition    });
+      profileCircle.style.backgroundSize = 'cover'; 
+      profileCircle.style.backgroundPosition = 'center'; 
+      profileCircle.style.backgroundRepeat = 'no-repeat'; 
     });
+
     // Fetch user data from the database
     db.ref(`users/${userEmailKey}/username`).once('value').then(snapshot => {
       const username = snapshot.val();
@@ -571,11 +563,7 @@ auth.onAuthStateChanged((user) => {
 // Save button event to update the database
 saveButton.addEventListener('click', function() {
   const user = auth.currentUser;
-
-  // Use the user.email value directly for display purposes
   const userEmail = user.email;
-
-  // Replace non-alphanumeric characters in the email for database path usage
   const userEmailKey = userEmail.replace(/[^a-zA-Z0-9]/g, ',');
 
   // Create user data object for individual fields
@@ -586,7 +574,7 @@ saveButton.addEventListener('click', function() {
   const weight = weightInput.value;
 
   if (user) {
-    
+    // Save all the user inputs to the db
     db.ref(`users/${userEmailKey}/username`).set(username)
       .then(() => console.log('Username updated successfully!'))
       .catch(error => alert('Error updating username: ' + error.message));
@@ -611,31 +599,31 @@ saveButton.addEventListener('click', function() {
   }
 });
 
-
     // Logout button event
     logoutButton.addEventListener('click', function() {
-      auth.signOut().then(() => {
+      auth.signOut().then(() => { // Logout from the account
         alert('Logged out');
-        window.location.href = 'index.html'; // Change this URL to redirect to the login page
+        window.location.href = 'index.html'; // Redirect to login page
       }).catch(error => {
         alert('Error logging out: ' + error.message);
       });
     });
 
-
+    // html elements for the delete account button
     const deleteBtn = document.getElementById('deleteBtn');
     const deleteContainer = document.getElementById('deleteContainer');
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
-
+    // Makes a confirmation to delete pop up appear when clicked
     deleteBtn.addEventListener('click', function(){
-      deleteContainer.classList.remove('hidden');
-      body.classList.add('blur');
+      deleteContainer.classList.remove('hidden'); 
+      body.classList.add('blur'); // Blur anything but the confirmation div
       setTimeout(() => {
         deleteContainer.classList.remove('blur');
-      }, 1000); // 5 seconds for demo purposes
+      }, 1000); 
     })
-    yesBtn.addEventListener('click', function() {
+// Deletes the account if yes is clicked on the confirmation div
+yesBtn.addEventListener('click', function() {
   const user = firebase.auth().currentUser;
   
   if (user) {
@@ -662,7 +650,7 @@ saveButton.addEventListener('click', function() {
     console.log('No user is currently logged in.');
   }
 });
-
+// Cancels the delete and hides the confirmation div
 noBtn.addEventListener('click', function(){
   deleteContainer.classList.add('hidden');
   body.classList.remove('blur')
