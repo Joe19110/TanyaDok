@@ -12,6 +12,7 @@ body {
   right: 0; 
   justify-items: center;
 }
+
 .editable {
   border: 1px dashed transparent;
   padding: 5px;
@@ -143,6 +144,7 @@ li {
   background: #fff;
   padding: 10% 5% 0px 5%;
 }
+
 #main-dashboard {
   max-width: 70%;
 }
@@ -307,11 +309,11 @@ legend {
   flex-shrink: 0;
   justify-self: center;
 }
+
 input[type="checkbox"] {
   width: 1em;
   height: 1em;
 }
-
 
 .carousel-inner {
   overflow: visible; /* Ensure sliding animations are visible */
@@ -321,7 +323,6 @@ input[type="checkbox"] {
 .carousel-inner .carousel-item-next,
 .carousel-inner .carousel-item-prev {
   display: flex;
-  
 }
 
 .carousel-inner .carousel-item-end.active,
@@ -341,7 +342,6 @@ span[contenteditable="true"] {
   cursor: text;
   outline: none;
 }
-
 
 .reminder {
   display: flex;
@@ -407,21 +407,26 @@ span[contenteditable="true"] {
 .date-numbers {
   font-size: max(1vw, 12px);
 }
-@media (max-width: 770px) {
+
+@media (max-width: 770px) { /* for responsiveness */
   .calendar-wrap {
     width: 70%; 
     font-size: 2em;
   } 
+
   #recipe-carousel {
     width: 100%;
   }
+
   .health-tracker-containers {
     width: 17em;
     height: 12em;
   }
+
   h6 {
     padding-top: 0px;
   }
+
   .col-md-3 {
     padding-left: 2%;
     padding-right: 2%;
@@ -430,14 +435,16 @@ span[contenteditable="true"] {
   #myChart {
     font-size: 1vw;
     width: 100%; 
-
   }
+
   #content {
     flex-direction: column;
   }
+
   #weekly-graph-container {
     height: 40vw; 
   }
+
   #main-dashboard {
     max-width: 100%;
     height: fit-content;
@@ -445,17 +452,21 @@ span[contenteditable="true"] {
     padding: 0;
     right: 0;
   }
+
   #side-dashboard {
     width: 100%;
   }
+
   #reminders-container {
     width: 50vw;
     margin-bottom: 5%;
   }
+
   input[type="checkbox"] {
     width: 2em;
     height: 2em;
   }
+
   #profile {
     margin: 5% 0 0 60%;
   }
