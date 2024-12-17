@@ -689,7 +689,7 @@ yesBtn.addEventListener('click', function () {
   if (user) {
     // Check if the user is logged in with email/password
     if (provider !== 'google.com') {
-      // For email/password login, reauthentication is required
+      // For email/password login, reauthentication is required to delete
       const password = document.getElementById('passwordInput').value;
 
       if (password) {
@@ -703,7 +703,6 @@ yesBtn.addEventListener('click', function () {
           .then(() => {
             console.log('User reauthenticated successfully.');
 
-            // Replace special characters in email to create a safe key
             const userEmailKey = email.replace(/[^a-zA-Z0-9]/g, ',');
 
             // Delete user data from the database first
@@ -712,7 +711,7 @@ yesBtn.addEventListener('click', function () {
           .then(() => {
             console.log('User data deleted successfully from the database.');
 
-            // Now delete the user account from Firebase Authentication
+            // Delete the user account from Firebase Authentication
             return user.delete();
           })
           .then(() => {
@@ -729,10 +728,9 @@ yesBtn.addEventListener('click', function () {
         alert('Password is required to proceed with account deletion.');
       }
     } else {
-      // If the user is logged in with Google, no reauthentication is needed
+      // If the user is logged in with Google, no reauthentication is needed to delete
       console.log('User is logged in with Google, no reauthentication needed.');
 
-      // Replace special characters in email to create a safe key
       const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ',');
 
       // Delete user data from the database first
@@ -740,7 +738,7 @@ yesBtn.addEventListener('click', function () {
         .then(() => {
           console.log('User data deleted successfully from the database.');
 
-          // Now delete the user account from Firebase Authentication
+          // Delete the user account from Firebase Authentication
           return user.delete();
         })
         .then(() => {
@@ -763,6 +761,7 @@ yesBtn.addEventListener('click', function () {
 noBtn.addEventListener('click', function(){
   deleteContainer.classList.add('hidden');
   body.classList.remove('blur')
+  passwordInput.value = ''; // Clear the password input
 })
 
 showLoadingBar() // Calls the loading bar
