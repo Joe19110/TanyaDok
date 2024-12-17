@@ -684,11 +684,11 @@ saveButton.addEventListener('click', function() {
 // Add event listener for the "Yes" button
 yesBtn.addEventListener('click', function () {
   const user = firebase.auth().currentUser;
-
+const provider = user.providerData[0].providerId;
   if (user) {
     const password = document.getElementById('passwordInput').value;
 
-    if (password) {
+    if (password || provider === 'google.com') {
       const email = user.email;
 
       // Create a credential for reauthentication
