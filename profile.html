@@ -684,27 +684,59 @@ saveButton.addEventListener('click', function() {
 // Add event listener for the "Yes" button
 yesBtn.addEventListener('click', function () {
   const user = firebase.auth().currentUser;
-const provider = user.providerData[0].providerId;
+  const provider = user.providerData[0].providerId; // Get the provider
+
   if (user) {
-    const password = document.getElementById('passwordInput').value;
+    // Check if the user is logged in with email/password
+    if (provider !== 'google.com') {
+      // For email/password login, reauthentication is required
+      const password = document.getElementById('passwordInput').value;
 
-    if (password || provider === 'google.com') {
-      const email = user.email;
+      if (password) {
+        const email = user.email;
 
-      // Create a credential for reauthentication
-      const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+        // Create a credential for reauthentication
+        const credential = firebase.auth.EmailAuthProvider.credential(email, password);
 
-      // Reauthenticate the user
-      user.reauthenticateWithCredential(credential)
-        .then(() => {
-          console.log('User reauthenticated successfully.');
+        // Reauthenticate the user
+        user.reauthenticateWithCredential(credential)
+          .then(() => {
+            console.log('User reauthenticated successfully.');
 
-          // Replace special characters in email to create a safe key
-          const userEmailKey = email.replace(/[^a-zA-Z0-9]/g, ',');
+            // Replace special characters in email to create a safe key
+            const userEmailKey = email.replace(/[^a-zA-Z0-9]/g, ',');
 
-          // Delete user data from the database first
-          return db.ref(`users/${userEmailKey}`).remove();
-        })
+            // Delete user data from the database first
+            return db.ref(`users/${userEmailKey}`).remove();
+          })
+          .then(() => {
+            console.log('User data deleted successfully from the database.');
+
+            // Now delete the user account from Firebase Authentication
+            return user.delete();
+          })
+          .then(() => {
+            console.log('User account deleted successfully.');
+
+            // Redirect to login page after deletion
+            window.location.href = 'index.html';
+          })
+          .catch((error) => {
+            console.error('Reauthentication failed or wrong password:', error);
+            alert('Wrong password');
+          });
+      } else {
+        alert('Password is required to proceed with account deletion.');
+      }
+    } else {
+      // If the user is logged in with Google, no reauthentication is needed
+      console.log('User is logged in with Google, no reauthentication needed.');
+
+      // Replace special characters in email to create a safe key
+      const userEmailKey = user.email.replace(/[^a-zA-Z0-9]/g, ',');
+
+      // Delete user data from the database first
+      db.ref(`users/${userEmailKey}`).remove()
         .then(() => {
           console.log('User data deleted successfully from the database.');
 
@@ -718,16 +750,14 @@ const provider = user.providerData[0].providerId;
           window.location.href = 'index.html';
         })
         .catch((error) => {
-          console.error('Wrong password');
-          alert('Wrong password');
+          console.error('Error deleting user data or account:', error);
         });
-    } else {
-      alert('Password is required to proceed with account deletion.');
     }
   } else {
     console.log('No user is currently logged in.');
   }
 });
+
 
 // Cancels the delete and hides the confirmation div
 noBtn.addEventListener('click', function(){
