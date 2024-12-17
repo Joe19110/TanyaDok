@@ -202,15 +202,19 @@ const auth = getAuth(authApp);
 // Initialize Firebase Realtime Database
 const dbApp = initializeApp(dbConfig, "db");
 const database = getDatabase(dbApp);
-let userid;
-// Listen for auth state changes
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    userid = user.uid;
+function getUserId() {
+    return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          resolve(user.uid); // Resolve promise with user ID
+        } else {
+          reject("No user logged in."); // Reject if no user is signed in
+        }
+      });
+    });
   }
-});
-document.addEventListener("DOMContentLoaded", function () {
-    
+document.addEventListener("DOMContentLoaded", async () => {
+    const userid = await getUserId(); 
     function getCookie(name) {
         if (document.cookie.length) {
             var arrCookie = document.cookie.split(';'),
