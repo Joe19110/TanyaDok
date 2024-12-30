@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyB8Fhgf_QvP_Jp3DgcH547IRZvn9vfgP4Q' // Define the chatbot API
+const API_KEY = 'AIzaSyDjW_fZr3qwFxSpfKCwim3OnmZ0XY42KtI' // Define the chatbot API
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`
 
 // Defines all the html elements
